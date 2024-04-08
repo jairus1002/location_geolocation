@@ -37,6 +37,20 @@ function getCoordinates() {
     return json_encode($coordinates);
 }
 
+// Function to insert coordinates into the database
+function insertCoordinates($latitude, $longitude) {
+    $conn = connectDatabase();
+    // SQL query to insert latitude and longitude into the database
+    $sql = "INSERT INTO los (latitude, longitude) VALUES ('$latitude', '$longitude')";
+    if (mysqli_query($conn, $sql)) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+    // Close the database connection
+    mysqli_close($conn);
+}
+
 // Check if data is received via POST method
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Decode JSON data

@@ -11,18 +11,15 @@
     <style>
         /* Set background image */
         body {
-    background-image: url('car.jpg');
-    background-size: cover; /* Adjusted to cover */
-    background-repeat: no-repeat;
-}
-
-
+            background-image: url('ima.jpg');
+            background-size: cover; /* Adjusted to cover */
+            background-repeat: no-repeat;
+        }
         /* Set map container size */
         #map {
             height: 400px;
             width: 100%;
         }
-
         #distance,
         #fuelConsumption {
             font-size: 18px;
@@ -64,8 +61,6 @@
             <div class="col-md-12">
                 <div id="distance" style="color: rgb(205, 219, 0); font-size: 20px;"></div>
             </div>
-        </div>
-        
         </div>
     </div>
 
@@ -130,13 +125,20 @@
         // Function to fetch coordinates from the server and initialize map
         function fetchAndDisplayLocation() {
             // Make a GET request to fetch coordinates from the server
-            fetch('gps.php')
-                .then(response => response.json())
-                .then(data => {                    initMap(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'gps.php', true);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    var data = JSON.parse(xhr.responseText);
+                    initMap(data);
+                } else {
+                    console.error('Error:', xhr.statusText);
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Request failed.');
+            };
+            xhr.send();
         }
 
         // Function to get fuel consumption rate based on selected car
@@ -167,4 +169,3 @@
     </script>
 </body>
 </html>
-                   
