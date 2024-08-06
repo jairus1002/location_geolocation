@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Display</title>
+    <!-- Include Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCK79DYIs-lQHQftTl5JXrhwxm-mKwd0Q0&libraries=places"></script>
+    <style>
+        body {
+            background-image: url('ima.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-3">Location Display</h1>
+        <div id="map" class="mb-3"></div>
+    </div>
+
+    <script>
+        // Function to initialize Google Map
+        function initMap(coordinates) {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: parseFloat(coordinates[0].lat), lng: parseFloat(coordinates[0].lng) },
+                zoom: 8
+            });
+
+            var routeCoordinates = coordinates.map(coord => ({
+                lat: parseFloat(coord.lat),
+                lng: parseFloat(coord.lng)
+            }));
+
+            var routePolyline = new google.maps.Polyline({
+                path: routeCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            routePolyline.setMap(map);
+        }
+
+        // Function to fetch coordinates from the server and initialize map
+        function fetchAndDisplayLocation() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'gps.php', true);
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    var data = JSON.parse(xhr.responseText);
+                    initMap(data);
+                } else {
+                    console.error('Error:', xhr.statusText);
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Request failed.');
+            };
+            xhr.send();
+        }
+
+        // Call fetchAndDisplayLocation function to display location when the page loads
+        fetchAndDisplayLocation();
+    </script>
+</body>
+</html>
